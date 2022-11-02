@@ -4,6 +4,8 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
 import android.view.LayoutInflater;
@@ -11,9 +13,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.GridLayout;
+import android.widget.Toast;
 
 
-public class GameFragment extends Fragment {
+public class  GameFragment extends Fragment {
     private final String GAME_STATE = "gameState";
     private LightsOutGame mGame;
     private GridLayout mLightGrid;
@@ -34,7 +37,65 @@ public class GameFragment extends Fragment {
         newGameBtn.setOnClickListener(v -> startGame());
 
         SharedPreferences sharedPref = this.requireActivity().getPreferences(Context.MODE_PRIVATE);
+        int onColorId = sharedPref.getInt("color",R.color.yellow);
 
-        return;
+        mLightOnColor = ContextCompat.getColor(this.requireActivity(), onColorId);
+        mLightoffColor = ContextCompat.getColor(this.requireActivity(), R.color.black);
+
+        mGame = new LightsOutGame();
+
+        if (savedInstanceState == null){
+            startGame();
+        }
+        else{
+            String gameState = savedInstanceState.getString(GAME_STATE);
+            mGame.setState(gameState);
+            setButtonColors();
+        }
+
+        return parentView;
     }
+
+    @Override
+    public void onSaveInstanceState(@NonNull Bundle outState){
+        super.onSaveInstanceState(outState);
+        outState.putString(GAME_STATE, mGame.getState());
+    }
+
+    private void startGame() {
+        mGame.newGame();
+        setButtonColors();
+    }
+
+    public void onLightButtonClick(View view){
+
+        int buttonIndex = mLightGrid.indexOfChild(view);
+        int row = buttonIndex / LightsOutGame.GRID_SIZE;
+        int col = buttonIndex % LightsOutGame.GRID_SIZE;
+
+        mGame.selectLight(row, col);
+        setButtonColors();
+
+        if (mGame.isGameOver()){
+            Toast.makeText(this.requireActivity(), R.string.congrats, Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    private void setButtonColors(){
+        for (int buttonIndex = 0; buttonIndex < mLightGrid.getChildCount(); buttonIndex++){
+            Button gridButton = (Button) mLightGrid.getChildAt(buttonIndex);
+
+            int row = buttonIndex / LightsOutGame.GRID_SIZE;
+            int col = buttonIndex % LightsOutGame.GRID_SIZE;
+
+            if (mGame.isLightOn(row, col)){
+                gridButton.setBackgroundColor(mLightOnColor);
+            }
+            else{
+                gridButton.setBackgroundColor(mLightoffColor);
+            }
+        }
+    }
+
+
 }

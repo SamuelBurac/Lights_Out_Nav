@@ -4,13 +4,13 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientaion="vertical">
+    android:orientation="vertical">
 
     <TextView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:textSize="30sp"
-        android:layout_gravity="center"
+        android:gravity="center"
         android:layout_margin="20dp"
         android:text="@string/choose_color" />
     <RadioGroup
