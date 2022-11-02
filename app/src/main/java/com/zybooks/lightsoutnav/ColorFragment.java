@@ -15,7 +15,7 @@ import android.widget.RadioGroup;
 
 
 public class ColorFragment extends Fragment {
-    public View oncreateView(@NonNull LayoutInflater inflater,
+    public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container,Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_color, container, false);
         SharedPreferences sharedPref = requireActivity().getPreferences(Context.MODE_PRIVATE);
